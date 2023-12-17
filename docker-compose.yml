@@ -91,3 +91,12 @@ services:
         environment:
             ADMINER_DEFAULT_SERVER: mysql-container
             ADMINER_DESIGN: galkaev
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        depends_on:
+        - mysql-container
+        environment:
+        - PMA_HOSTS=mysql-container
+        ports:
+        - "3306:80"
