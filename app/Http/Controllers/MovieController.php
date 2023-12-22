@@ -9,7 +9,6 @@ class MovieController extends Controller
 {
     public function index(){
         $movies = Movie::all();
-        Log::debug($movies->count());
         return view('getMovie',['movies'=>$movies]);
     }
 }
