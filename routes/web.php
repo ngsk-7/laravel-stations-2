@@ -25,4 +25,22 @@ Route::get('/practice3',[PracticeController::class,'sample3']);
 Route::get('/getPractice',[PracticeController::class,'getPractice']);
 
 Route::get('/movies',[MovieController::class,'index']);
-Route::get('/admin/movies',[MovieController::class,'index']);
+
+//トップ画面
+Route::get('/admin/movies',[MovieController::class,'index'])->name('admin.movies');
+//新規作成画面
+Route::get('/admin/movies/create',[MovieController::class,'create']);
+//新規作成処理
+Route::get('/admin/movies/store',[MovieController::class,'store']);
+Route::post('/admin/movies/store',[MovieController::class,'store']);
+Route::patch('/admin/movies/store',[MovieController::class,'store']);
+//編集画面
+Route::get('/admin/movies/{id}/edit',[MovieController::class,'edit']);
+//更新処理
+Route::get('/admin/movies/{id}/update',[MovieController::class,'update']);
+Route::post('/admin/movies/{id}/update',[MovieController::class,'update']);
+Route::patch('/admin/movies/{id}/update',[MovieController::class,'update']);
+//削除処理
+Route::get('/admin/movies/{id}/destroy',[MovieController::class,'destroy']);
+Route::post('/admin/movies/{id}/destroy',[MovieController::class,'destroy']);
+Route::delete('/admin/movies/{id}/destroy',[MovieController::class,'destroy']);
