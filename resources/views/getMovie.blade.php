@@ -60,7 +60,7 @@
         <input type="radio" name="is_showing" value="1">公開中</input><br>
         <button type="button" id="search-button">検索</button><br><br>
     </form>
-    <button data-href="./create" name="create-button">新規作成</button>
+    <button data-href="/admin/movies/create" name="create-button">新規作成</button>
     <ul>
         <table class="table">
             <tr>
@@ -70,6 +70,7 @@
             <th>公開年</th>
             <th>上映中かどうか</th>
             <th>概要</th>
+            <th>ジャンル</th>
             <th>登録日時</th>
             <th>更新日時</th>
             <th>編集</th>
@@ -85,7 +86,6 @@
                 }else if($isShowing == 0){
                     $isShowingView = "上映予定";
                 }
-
             @endphp
             <tr>
             <td>{{ $movie->id }}</td>
@@ -94,10 +94,11 @@
             <td>{{ $movie->published_year }}</td>
             <td>{{ $isShowingView }}</td>
             <td>{{ $movie->description }}</td>
+            <td>{{ $movie->name }}</td>
             <td>{{ $movie->created_at }}</td>
             <td>{{ $movie->updated_at }}</td>
-            <td><button data-href="./movies/{{ $movie->id }}/edit" name="update-button">編集</button></td>
-            <td><button data-href="./movies/{{ $movie->id }}/destroy" name="delete-button">削除</button></td>
+            <td><button data-href="/admin/movies/{{ $movie->id }}/edit" name="update-button">編集</button></td>
+            <td><button data-href="/admin/movies/{{ $movie->id }}/destroy" name="delete-button">削除</button></td>
             </tr>
             @endforeach
         </table>

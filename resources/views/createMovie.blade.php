@@ -21,6 +21,7 @@
             <th>公開年</th>
             <th>上映中かどうか</th>
             <th>概要</th>
+            <th>ジャンル</th>
             </tr>
                 @method('PATCH')
                 @csrf
@@ -30,6 +31,7 @@
                 <td><input type="text" name="published_year" value="" maxlength="9"></td>
                 <td><input type="hidden" name="is_showing" value="0"><input type="checkbox" name="is_showing" value="1"></td>
                 <td><textarea name="description"></textarea></td>
+                <td><input type="text" name="genre" value=""></td>
             </tr>
         </table>
         <input type="submit" name="create-button">

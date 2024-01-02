@@ -22,6 +22,7 @@
             <th>公開年</th>
             <th>上映中かどうか</th>
             <th>概要</th>
+            <th>ジャンル</th>
             <th>登録日時</th>
             <th>更新日時</th>
             </tr>
@@ -46,6 +47,7 @@
                 <td><input type="text" name="published_year" value="{{ $movie->published_year }}" maxlength="9"></td>
                 <td><input type="hidden" name="is_showing" value="0"><input type="checkbox" name="is_showing" value="1" {{ $isShowingView }}></td>
                 <td><textarea name="description">{{ $movie->description }}</textarea></td>
+                <td><input type="text" name="genre" value="{{ $movie->genre->name }}"></td>
                 <td>{{ $movie->created_at }}</td>
                 <td>{{ $movie->updated_at }}</td>
                 </tr>

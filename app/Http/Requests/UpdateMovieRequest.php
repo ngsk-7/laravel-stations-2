@@ -30,6 +30,7 @@ class UpdateMovieRequest extends FormRequest
             'published_year' => ['required', 'gte:1900'],
             'is_showing' => ['required', 'boolean'],
             'description' => ['required'],
+            'genre' => ['required'],
         ];
     }
     //validationでエラーがあった時のエラーメッセージを以下で生成する。
@@ -42,6 +43,7 @@ class UpdateMovieRequest extends FormRequest
             'published_year.required' => '公開年を入力してください。', 
             'published_year.gte' => '公開年は1900以上の値を入力してください。', 
             'description.required' => '概要を入力してください。', 
+            'genre.required' => 'ジャンルを入力してください。', 
         ];
     }
 
