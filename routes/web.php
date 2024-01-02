@@ -28,6 +28,7 @@ Route::get('/movies',[MovieController::class,'index']);
 
 //トップ画面
 Route::get('/admin/movies',[MovieController::class,'index'])->name('admin.movies');
+Route::post('/admin/movies',[MovieController::class,'index'])->name('admin.movies');
 //新規作成画面
 Route::get('/admin/movies/create',[MovieController::class,'create']);
 //新規作成処理

@@ -8,13 +8,31 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script>
         (function () {
 
+            //検索ボタン
+            $(document).on('click','#search-button',function(event){
+                $('#search-form').submit();
+            });
+
+            //新規作成ボタン
+            $(document).on('click','[name=create-button]',function(event){
+                var postURL = $(this).attr('data-href');
+                location.href=postURL;
+            });
+
+            //更新ボタン
+            $(document).on('click','[name=update-button]',function(event){
+                var postURL = $(this).attr('data-href');
+                location.href=postURL;
+            });
+
+            //削除ボタン
             $(document).on('click','[name=delete-button]',function(event){
-                event.preventDefault();
-                var postURL = $(this).attr('href');
-                console.log(postURL);
+                // event.preventDefault();
+                var postURL = $(this).attr('data-href');
                 $(".delete_check_dialog").dialog({
                     title:"確認",
                     buttons:{
@@ -29,13 +47,22 @@
                 });
             });
 
+
+
         }());
     </script>
 </head>
 <body>
+    <form method="GET" action="" id="search-form" >
+        検索：<input type="text" name="keyword" /><br>
+        <input type="radio" name="is_showing" value="-1" checked>すべて</input>
+        <input type="radio" name="is_showing" value="0">公開予定</input>
+        <input type="radio" name="is_showing" value="1">公開中</input><br>
+        <button type="button" id="search-button">検索</button><br><br>
+    </form>
+    <button data-href="./create" name="create-button">新規作成</button>
     <ul>
-    <a href="./movies/create">新規作成</a>
-        <table border="1">
+        <table class="table">
             <tr>
             <th>ID</th>
             <th>映画タイトル</th>
@@ -69,12 +96,13 @@
             <td>{{ $movie->description }}</td>
             <td>{{ $movie->created_at }}</td>
             <td>{{ $movie->updated_at }}</td>
-            <td><a href="./movies/{{ $movie->id }}/edit">編集</a></td>
-            <td><a href="./movies/{{ $movie->id }}/destroy" name="delete-button">削除</a></td>
+            <td><button data-href="./movies/{{ $movie->id }}/edit" name="update-button">編集</button></td>
+            <td><button data-href="./movies/{{ $movie->id }}/destroy" name="delete-button">削除</button></td>
             </tr>
             @endforeach
         </table>
     </ul>
+    {{ $movies->links() }}
 
     <div class="delete_check_dialog" style="display:none;">削除します。よろしいですか？</div>
 </body>
