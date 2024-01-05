@@ -14,7 +14,7 @@ class CreateMoviesTable extends Migration
     public function up()
     {
         Schema::create('movies', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('title',100)->comment('映画タイトル')->unique();
             $table->text('image_url')->comment('画像URL');
             $table->integer('published_year')->comment('公開年');

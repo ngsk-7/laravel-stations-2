@@ -47,7 +47,7 @@ class MovieController extends Controller
         // ->where('movies.id',$id)
         // ->get();
         // $movies = $moviesQuery;
-        $movies = Movie::find($id)->get();
+        $movies = Movie::where('id',$id)->get();
         return view('editMovie',['movies'=>$movies]);
     }
     public function store(UpdateMovieRequest $request){

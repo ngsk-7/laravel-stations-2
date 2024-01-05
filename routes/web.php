@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PracticeController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\SheetsController;
+use App\Http\Controllers\ScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,3 +47,9 @@ Route::patch('/admin/movies/{id}/update',[MovieController::class,'update']);
 Route::get('/admin/movies/{id}/destroy',[MovieController::class,'destroy']);
 Route::post('/admin/movies/{id}/destroy',[MovieController::class,'destroy']);
 Route::delete('/admin/movies/{id}/destroy',[MovieController::class,'destroy']);
+
+//座席画面
+Route::get('/sheets',[SheetsController::class,'index']);
+
+//詳細画面
+Route::get('/movies/{id}',[ScheduleController::class,'index']);

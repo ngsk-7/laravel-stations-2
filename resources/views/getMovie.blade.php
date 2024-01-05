@@ -23,6 +23,12 @@
                 location.href=postURL;
             });
 
+            //詳細ボタン
+            $(document).on('click','[name=detail-button]',function(event){
+                var postURL = $(this).attr('data-href');
+                location.href=postURL;
+            });
+
             //更新ボタン
             $(document).on('click','[name=update-button]',function(event){
                 var postURL = $(this).attr('data-href');
@@ -73,6 +79,7 @@
             <th>ジャンル</th>
             <th>登録日時</th>
             <th>更新日時</th>
+            <th>詳細</th>
             <th>編集</th>
             <th>削除</th>
             </tr>
@@ -97,6 +104,7 @@
             <td>{{ $movie->name }}</td>
             <td>{{ $movie->created_at }}</td>
             <td>{{ $movie->updated_at }}</td>
+            <td><button data-href="/movies/{{ $movie->id }}" name="detail-button">詳細</button></td>
             <td><button data-href="/admin/movies/{{ $movie->id }}/edit" name="update-button">編集</button></td>
             <td><button data-href="/admin/movies/{{ $movie->id }}/destroy" name="delete-button">削除</button></td>
             </tr>
