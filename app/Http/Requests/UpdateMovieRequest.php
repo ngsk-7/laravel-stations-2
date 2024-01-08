@@ -47,16 +47,5 @@ class UpdateMovieRequest extends FormRequest
         ];
     }
 
-    //validationでエラーがでた時にjsonで返す。
-    // protected function failedValidation(Validator $validator)
-    // {
-    //     $response = response()->json([
-    //         'status' => 400, //jsonの返事の中身のエラー番号
-    //         'errors' => $validator->errors(),
-    //     ],400); //実際に送られるresponse codeが400番　これが無いと、jsonでエラーメッセージは返ってくるけど送れらてくるのは200番のstatusOKとくる。
 
-    //     //例外を知らせる。
-    //     //throw new 例外クラス名（例外message）
-    //     throw new HttpResponseException($response);
-    // }
 }

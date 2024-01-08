@@ -49,9 +49,9 @@ class ScheduleController extends Controller
         $scheduleData = new Schedule;
         $startTimeDate = $request->input('start_time_date');
         $startTimeTime = $request->input('start_time_time');
-        $startTime = new CarbonImmutable($startTimeDate . ' ' . $startTimeTime);
         $endTimeDate = $request->input('end_time_date');
         $endTimeTime = $request->input('end_time_time');
+        $startTime = new CarbonImmutable($startTimeDate . ' ' . $startTimeTime);
         $endTime = new CarbonImmutable($endTimeDate . ' ' . $endTimeTime);
 
         DB::beginTransaction();
@@ -76,9 +76,9 @@ class ScheduleController extends Controller
         $scheduleData = Schedule::find($id);
         $startTimeDate = $request->input('start_time_date');
         $startTimeTime = $request->input('start_time_time');
-        $startTime = new CarbonImmutable($startTimeDate . ' ' . $startTimeTime);
         $endTimeDate = $request->input('end_time_date');
         $endTimeTime = $request->input('end_time_time');
+        $startTime = new CarbonImmutable($startTimeDate . ' ' . $startTimeTime);
         $endTime = new CarbonImmutable($endTimeDate . ' ' . $endTimeTime);
 
         DB::beginTransaction();
