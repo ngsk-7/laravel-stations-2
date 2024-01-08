@@ -23,6 +23,12 @@
                 location.href=postURL;
             });
 
+            //スケジュール新規作成ボタン
+            $(document).on('click','[name=create-schedule-button]',function(event){
+                var postURL = $(this).attr('data-href');
+                location.href=postURL;
+            });
+
             //詳細ボタン
             $(document).on('click','[name=detail-button]',function(event){
                 var postURL = $(this).attr('data-href');
@@ -79,9 +85,10 @@
             <th>ジャンル</th>
             <th>登録日時</th>
             <th>更新日時</th>
-            <th>詳細</th>
-            <th>編集</th>
-            <th>削除</th>
+            <th>スケジュール新規作成</th>
+            <th>映画詳細</th>
+            <th>映画編集</th>
+            <th>映画削除</th>
             </tr>
             @foreach ($movies as $movie)
 
@@ -104,6 +111,7 @@
             <td>{{ $movie->name }}</td>
             <td>{{ $movie->created_at }}</td>
             <td>{{ $movie->updated_at }}</td>
+            <td><button data-href="/admin/movies/{{ $movie->id }}/schedules/create" name="create-schedule-button">新規作成</button></td>
             <td><button data-href="/movies/{{ $movie->id }}" name="detail-button">詳細</button></td>
             <td><button data-href="/admin/movies/{{ $movie->id }}/edit" name="update-button">編集</button></td>
             <td><button data-href="/admin/movies/{{ $movie->id }}/destroy" name="delete-button">削除</button></td>

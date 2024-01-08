@@ -32,9 +32,9 @@
                 $isShowing = $movie->is_showing;
                 $isShowingView = "";
                 if($isShowing == 1){
-                    $isShowingView = "checked";
+                    $isShowingView = "上映中";
                 }else if($isShowing == 0){
-                    $isShowingView = "";
+                    $isShowingView = "上映予定";
                 }
 
             @endphp
@@ -45,7 +45,7 @@
                 <td>{{ $movie->title }}</td>
                 <td><img src="{{ $movie->image_url }}" style="max-width:100px;"></td>
                 <td>{{ $movie->published_year }}</td>
-                <td>{{ $isShowing }}</td>
+                <td>{{ $isShowingView }}</td>
                 <td>{{ $movie->description }}</td>
                 <td>{{ $movie->genre->name }}</td>
                 <td>{{ $movie->created_at }}</td>

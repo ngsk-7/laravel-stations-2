@@ -17,8 +17,8 @@ class CreateSchedulesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('movie_id')->comment('動画ID');
             $table->foreign('movie_id')->references('id')->on('movies');
-            $table->time('start_time')->comment('上映開始時刻');
-            $table->time('end_time')->comment('上映終了時刻');
+            $table->dateTime('start_time')->comment('上映開始時刻');
+            $table->dateTime('end_time')->comment('上映終了時刻');
             $table->timestamps();
         });
     }

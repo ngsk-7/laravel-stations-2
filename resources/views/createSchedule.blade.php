@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>createMovie</title>
+    <title>createSchedule</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
@@ -23,24 +23,21 @@
         <form method="POST" action="./store" name="create-form" >
         <table class="table">
             <tr>
-            <th>映画タイトル</th>
-            <th>画像URL</th>
-            <th>公開年</th>
-            <th>上映中かどうか</th>
-            <th>概要</th>
-            <th>ジャンル</th>
+            <th>開始日付</th>
+            <th>開始時刻</th>
+            <th>終了日付</th>
+            <th>終了時刻</th>
             </tr>
                 @method('PATCH')
                 @csrf
                 <tr>
-                <td><input type="text" name="title" value="{{ old('title') }}"></td>
-                <td><input type="text" name="image_url" value="{{ old('image_url') }}"></td>
-                <td><input type="text" name="published_year" value="{{ old('published_year') }}" maxlength="9"></td>
-                <td><input type="hidden" name="is_showing" value="0"><input type="checkbox" name="is_showing" value="1"></td>
-                <td><textarea name="description">{{ old('description') }}</textarea></td>
-                <td><input type="text" name="genre" value="{{ old('genre') }}"></td>
+                <td><input type="text" name="start_time_date" value="{{ old('start_time_date') }}"></td>
+                <td><input type="text" name="start_time_time" value="{{ old('start_time_time') }}"></td>
+                <td><input type="text" name="end_time_date" value="{{ old('end_time_date') }}"></td>
+                <td><input type="text" name="end_time_time" value="{{ old('end_time_time') }}"></td>
             </tr>
         </table>
+        <input type="hidden" name="movie_id" value="{{ $movie_id }}">
         <input type="submit" name="create-button">
         </form>
         
