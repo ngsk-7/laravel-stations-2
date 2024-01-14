@@ -28,7 +28,14 @@ class ReservationController extends Controller
     public function sheets($movieID,$scheduleID){
         $date = request()->query('date');
         if(request()->has('date')){
-            $sheets = DB::table('sheets')->get();
+            $sheets = DB::table('sheets')
+            ->select('sheets.*','reservations.sheet_id')
+            ->leftJoin('reservations', function ($join) use($scheduleID) {
+                $join->on('sheets.id', '=', 'reservations.sheet_id')->where('reservations.schedule_id', '=', $scheduleID);
+            })
+
+            ->get();
+
             $movie = Movie::where('id',$movieID)->first();
             $schedule = Schedule::where('id',$scheduleID)->first();
             return view('getReservationSheets',['sheets'=>$sheets,'movie'=>$movie,'schedule'=>$schedule]);
@@ -41,7 +48,19 @@ class ReservationController extends Controller
         $date = request()->query('date');
         $sheetID = request()->query('sheetId');
         if(request()->has('date') && request()->has('sheetId')){
-            $sheet = Sheet::where('id',$sheetID)->first();
+
+            $sheet = DB::table('sheets')
+            ->select('sheets.*','reservations.sheet_id')
+            ->leftJoin('reservations', function ($join) use($scheduleID) {
+                $join->on('sheets.id', '=', 'reservations.sheet_id')->where('reservations.schedule_id', '=', $scheduleID);
+            })
+            ->where('sheets.id',$sheetID)
+            ->first();
+
+            if($sheet->sheet_id > 0){
+                abort(400);
+            }
+
             $movie = Movie::where('id',$movieID)->first();
             $schedule = Schedule::where('id',$scheduleID)->first();
             return view('createReservation',['sheet'=>$sheet,'movie'=>$movie,'schedule'=>$schedule]);

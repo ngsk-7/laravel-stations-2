@@ -46,6 +46,10 @@
 
             @php
                 $row = $sheet->row;
+                $reservationCheckflag = true;
+                if(($sheet->sheet_id > 0)){
+                    $reservationCheckflag = false;
+                }
             @endphp
             @if($rowCheck != $row)</tr><tr>@endif
             @php
@@ -54,8 +58,10 @@
                 }
             @endphp
 
-            <td>
-                <a href="" name="reservation-create-button">{{ $sheet->row }}-{{ $sheet->column }}</a>
+            <td @if(!$reservationCheckflag) style="background-color: gray;" @endif>
+                @if($reservationCheckflag)<a href="" name="reservation-create-button">@endif
+                {{ $sheet->row }}-{{ $sheet->column }}
+                @if($reservationCheckflag)</a>@endif
                 <input type="hidden" name="sheet-id" value="{{ $sheet->id }}">
             </td>
 
