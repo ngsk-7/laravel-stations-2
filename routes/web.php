@@ -5,6 +5,7 @@ use App\Http\Controllers\PracticeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\SheetsController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,10 @@ Route::get('/practice3',[PracticeController::class,'sample3']);
 Route::get('/getPractice',[PracticeController::class,'getPractice']);
 
 
-Route::get('/movies',[MovieController::class,'index']);
+Route::get('index', function () {
+    return view('index');
+});
+
 
 
 
@@ -56,7 +60,6 @@ Route::post('/admin/movies/{id}/destroy',[MovieController::class,'destroy']);
 Route::delete('/admin/movies/{id}/destroy',[MovieController::class,'destroy']);
 
 //詳細画面
-Route::get('movies/{id}',[ScheduleController::class,'detail']);
 Route::get('admin/movies/{id}',[ScheduleController::class,'detail']);
 
 //スケジュール新規作成画面
@@ -87,3 +90,16 @@ Route::delete('/admin/schedules/{id}/destroy',[ScheduleController::class,'destro
 
 //座席画面
 Route::get('/sheets',[SheetsController::class,'index']);
+
+
+//座席予約画面
+Route::get('/movies/{movie_id}/schedules/{schedule_id}/sheets',[ReservationController::class,'sheets']);
+//座席予約作成画面
+Route::get('/movies/{movie_id}/schedules/{schedule_id}/reservations/create',[ReservationController::class,'reservationsCreate']);
+//座席予約作成処理
+Route::get('/reservations/store',[ReservationController::class,'reservationsStore']);
+Route::post('/reservations/store',[ReservationController::class,'reservationsStore']);
+
+
+Route::get('/movies',[MovieController::class,'index']);
+Route::get('movies/{id}',[ScheduleController::class,'detail']);

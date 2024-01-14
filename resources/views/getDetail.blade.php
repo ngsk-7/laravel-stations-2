@@ -9,6 +9,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script>
+        (function () {
+            //座席を予約するボタン
+            $(document).on('click','[name=reservation-button]',function(event){
+                var postURL = $(this).attr('data-href') + '?date=' + $('#now-date').val();
+                location.href=postURL;
+            });
+
+        }());
+    </script>
 </head>
 <body>
     <a href="./">一覧へ戻る</a>
@@ -64,6 +74,7 @@
             <th>動画ID</th>
             <th>上映開始時刻</th>
             <th>上映終了時刻</th>
+            <th>予約</th>
             <th>登録日時</th>
             <th>更新日時</th>
             </tr>
@@ -76,6 +87,7 @@
                 <td>{{ $schedule->movie_id }}</td>
                 <td>{{ $schedule->start_time }}</td>
                 <td>{{ $schedule->end_time }}</td>
+                <td><button data-href="/movies/{{ $schedule->movie_id }}/schedules/{{ $schedule->id }}/sheets" name="reservation-button">座席を予約する</button></td>
                 <td>{{ $schedule->created_at }}</td>
                 <td>{{ $schedule->updated_at }}</td>
                 </tr>
@@ -83,5 +95,6 @@
         </table>
 
     </ul>
+    <input type="hidden" id="now-date" value="{{now()->format('Y-m-d')}}">
 </body>
 </html>
