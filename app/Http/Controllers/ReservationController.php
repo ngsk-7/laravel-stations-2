@@ -9,6 +9,8 @@ namespace App\Http\Controllers;
 // use App\Http\Requests\CreateScheduleRequest;
 // use App\Http\Requests\UpdateScheduleRequest;
 use App\Http\Requests\CreateReservationRequest;
+use App\Http\Requests\CreateAdminReservationRequest;
+use App\Http\Requests\UpdateAdminReservationRequest;
 use App\Models\Movie;
 use App\Models\Schedule;
 use App\Models\Sheet;
@@ -68,6 +70,31 @@ class ReservationController extends Controller
             abort(400);
         }
     }
+    public function reservationsAdminCreate(){
+
+            $movie = Movie::get();
+            return view('createAdminReservation',['movies'=>$movie]);
+
+    }
+
+    public function getScheduleList(){
+        $movieID = request()->query('movie_id');
+        $schedule = Schedule::where('movie_id',$movieID)->where('start_time','>',now())->get();
+        return ['schedules'=>$schedule];
+
+    }
+
+    public function getSheetList(){
+        $scheduleID = request()->query('schedule_id');
+        $sheets = DB::table('sheets')
+        ->select('sheets.*','reservations.sheet_id')
+        ->leftJoin('reservations', function ($join) use($scheduleID) {
+            $join->on('sheets.id', '=', 'reservations.sheet_id')->where('reservations.schedule_id', '=', $scheduleID);
+        })
+        ->get();
+        return ['sheets'=>$sheets];
+
+    }
 
     public function reservationsStore(CreateReservationRequest $request){
 
@@ -98,16 +125,67 @@ class ReservationController extends Controller
 
     }
 
-    // public function detail($id){
-    //     $movies = Movie::where('id',$id)->get();
-    //     $schedules = Schedule::where('movie_id',$id)->orderBy('start_time')->get();
-    //     return view('getDetail',['movies'=>$movies,'schedules'=>$schedules]);
-    // }
-    // public function index(){
-    //     $movies = Movie::get();
-    //     $schedules = Schedule::orderBy('start_time')->get();
-    //     return view('getSchedule',['movies'=>$movies,'schedules'=>$schedules]);
-    // }
+    public function adminReservationsStore(CreateAdminReservationRequest $request){
+
+        $reservationData = new Reservation;
+        $count = Reservation::where('schedule_id',$request->input('schedule_id'))->where('sheet_id',$request->input('sheet_id'))->get()->count();
+
+        $date = now();
+        if($count == 0){
+            DB::beginTransaction();
+            try {
+                $reservationData->fill([
+                    $reservationData->date = $date,
+                    $reservationData->schedule_id = $request->input('schedule_id'),
+                    $reservationData->sheet_id = $request->input('sheet_id'),
+                    $reservationData->email = $request->input('email'),
+                    $reservationData->name = $request->input('name'),
+                    $reservationData->is_canceled = 0,
+                ])->save();
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollback();
+                abort(500);
+            }
+    
+            return redirect(route('admin.reservations'));
+        }else{
+            return back()->withInput();
+        }
+
+    }
+
+    public function index(){
+        
+        $reservations = Reservation::whereHas('schedule', function($query) {
+            $query->where('start_time','>',now());
+        })->get();
+        // $reservationsQuery = DB::table('reservations')
+        // ->select('reservations.*','movies.title','sheets.column','sheets.row','schedules.start_time','schedules.end_time')
+        // ->join('schedules','reservations.schedule_id','=','schedules.id')
+        // ->join('sheets','reservations.sheet_id','=','sheets.id')
+        // ->join('movies','schedules.movie_id','=','movies.id')
+        // ->get();
+
+        return view('getReservation',['reservations'=>$reservations]);
+    }
+    public function edit($id){
+        
+        $reservationsQuery = DB::table('reservations')
+        ->select('reservations.*','movies.id AS movie_id','movies.title','sheets.id AS sheet_id','sheets.column','sheets.row','schedules.id AS schedule_id','schedules.start_time','schedules.end_time')
+        ->join('schedules','reservations.schedule_id','=','schedules.id')
+        ->join('sheets','reservations.sheet_id','=','sheets.id')
+        ->join('movies','schedules.movie_id','=','movies.id')
+        ->where('reservations.id',$id)
+        ->first();
+
+        
+        $movies = Movie::get();
+        $schedules = Schedule::where('movie_id',$reservationsQuery->movie_id)->where('start_time','>',now())->get();
+        $sheets = Sheet::get();
+
+        return view('editAdminReservation',['reservation'=>$reservationsQuery,'movies'=>$movies,'schedules'=>$schedules,'sheets'=>$sheets]);
+    }
     // public function indexSingle($id){
     //     $movies = Movie::where('id',$id)->get();
     //     $schedules = Schedule::where('movie_id',$id)->orderBy('start_time')->get();
@@ -121,41 +199,39 @@ class ReservationController extends Controller
     //     return view('editSchedule',['schedules'=>$schedules]);
     // }
 
-    // public function update(UpdateScheduleRequest $request){
-    //     $id = $request->id;
+    public function update($reservations_id,UpdateAdminReservationRequest $request){
+        $id = $reservations_id;
+        $reservationData = Reservation::find($id);
 
-    //     $scheduleData = Schedule::find($id);
-    //     $startTimeDate = $request->input('start_time_date');
-    //     $startTimeTime = $request->input('start_time_time');
-    //     $endTimeDate = $request->input('end_time_date');
-    //     $endTimeTime = $request->input('end_time_time');
-    //     $startTime = new CarbonImmutable($startTimeDate . ' ' . $startTimeTime);
-    //     $endTime = new CarbonImmutable($endTimeDate . ' ' . $endTimeTime);
+        $date = now();
+            DB::beginTransaction();
+            try {
+                $reservationData->fill([
+                    $reservationData->date = $date,
+                    $reservationData->schedule_id = $request->input('schedule_id'),
+                    $reservationData->sheet_id = $request->input('sheet_id'),
+                    $reservationData->email = $request->input('email'),
+                    $reservationData->name = $request->input('name'),
+                    $reservationData->is_canceled = 0,
+                ])->save();
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollback();
+                abort(500);
+            }
+    
+            return redirect(route('admin.reservations'));
 
-    //     DB::beginTransaction();
-    //     try {
-    //         $scheduleData->fill([
-    //             $scheduleData->movie_id = $request->input('movie_id'),
-    //             $scheduleData->start_time = $startTime,
-    //             $scheduleData->end_time = $endTime,
-    //         ])->save();
-    //         DB::commit();
-    //     } catch (\Exception $e) {
-    //         DB::rollback();
-    //         abort(500);
-    //     }
+    }
 
-    //     return redirect(route('admin.schedules'));
-
-    // }
-    // public function destroy($id){
-    //     $scheduleData = Schedule::find($id);
-    //     $scheduleDataExists = Schedule::where('id',$id)->exists();
-    //     if($scheduleDataExists){
-    //         $scheduleData->delete();
-    //     }else{
-    //         abort(404);
-    //     }
-    //     return redirect(route('admin.schedules'));
-    // }
+    public function destroy($id){
+        $reservationData = Reservation::find($id);
+        $reservationDataExists = Reservation::where('id',$id)->exists();
+        if($reservationDataExists){
+            $reservationData->delete();
+        }else{
+            abort(404);
+        }
+        return redirect(route('admin.reservations'));
+    }
 }

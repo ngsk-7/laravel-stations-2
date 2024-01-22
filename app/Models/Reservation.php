@@ -14,11 +14,11 @@ class Reservation extends Model
     
     protected $fillable = ['date','schedule_id','sheet_id','email','name','is_canceled','created_at','updated_at'];
 
-    public function schedules() {
-        return $this->belongsTo(Schedule::class,'schedule_id','id');
+    public function schedule() {
+        return $this->belongsTo(Schedule::class);
     }
 
-    public function sheets() {
+    public function sheet() {
         return $this->belongsTo(Sheet::class,'sheet_id','id');
     }
 }

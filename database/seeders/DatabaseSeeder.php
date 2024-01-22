@@ -17,19 +17,27 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Practice::factory(10)->create();
-        Movie::factory(30)->create();
+        // Movie::factory(30)->create();
 
-        DB::table('genres')->insert([
-            'name' => 'ジャンル',
-        ]);
+        // DB::table('genres')->insert([
+        //     'name' => 'ジャンル',
+        // ]);
 
-        $sheetsArray = ['a','b','c'];
+
+
+        $sheetsArray = ['A','B','C'];
+        $idCount = 1;
         for($i=0;$i<count($sheetsArray);$i++){
             for($k=1;$k<=5;$k++){
-                DB::table('sheets')->insert([
-                    'column' => $k,
-                    'row' => $sheetsArray[$i],
-                ]);
+                $idExistCheck = DB::table('sheets')->where('id',$idCount)->exists();
+                if(!$idExistCheck){
+                    DB::table('sheets')->insert([
+                        'id' => $idCount,
+                        'column' => $k,
+                        'row' => $sheetsArray[$i],
+                    ]);
+                }
+                $idCount++;
             }
         }
     }

@@ -34,8 +34,6 @@ Route::get('index', function () {
 
 
 
-
-
 //映画一覧画面
 Route::get('/admin/movies',[MovieController::class,'index'])->name('admin.movies');
 Route::post('/admin/movies',[MovieController::class,'index'])->name('admin.movies');
@@ -62,12 +60,16 @@ Route::delete('/admin/movies/{id}/destroy',[MovieController::class,'destroy']);
 //詳細画面
 Route::get('admin/movies/{id}',[ScheduleController::class,'detail']);
 
+
+
 //スケジュール新規作成画面
 Route::get('/admin/movies/{id}/schedules/create',[ScheduleController::class,'create']);
 //スケジュール新規作成処理
 Route::get('/admin/movies/{id}/schedules/store',[ScheduleController::class,'store']);
 Route::post('/admin/movies/{id}/schedules/store',[ScheduleController::class,'store']);
 Route::patch('/admin/movies/{id}/schedules/store',[ScheduleController::class,'store']);
+
+
 
 
 //スケジュール一覧画面
@@ -85,6 +87,22 @@ Route::patch('/admin/schedules/{id}/update',[ScheduleController::class,'update']
 Route::get('/admin/schedules/{id}/destroy',[ScheduleController::class,'destroy']);
 Route::post('/admin/schedules/{id}/destroy',[ScheduleController::class,'destroy']);
 Route::delete('/admin/schedules/{id}/destroy',[ScheduleController::class,'destroy']);
+
+
+
+
+//予約管理関連
+Route::get('/admin/reservations/',[ReservationController::class,'index'])->name('admin.reservations');
+Route::get('/admin/reservations/create',[ReservationController::class,'reservationsAdminCreate']);
+Route::get('/admin/reservations/getScheduleList',[ReservationController::class,'getScheduleList']);
+Route::get('/admin/reservations/getSheetList',[ReservationController::class,'getSheetList']);
+Route::post('/admin/reservations/',[ReservationController::class,'adminReservationsStore']);
+Route::delete('/admin/reservations/{reservations_id}/',[ReservationController::class,'destroy']);
+Route::get('/admin/reservations/{reservations_id}/edit',[ReservationController::class,'edit']);
+Route::get('/admin/reservations/{reservations_id}/',[ReservationController::class,'edit']);
+Route::put('/admin/reservations/{reservations_id}/',[ReservationController::class,'update']);
+Route::patch('/admin/reservations/{reservations_id}/',[ReservationController::class,'update']);
+
 
 
 

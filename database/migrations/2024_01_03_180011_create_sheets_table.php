@@ -14,7 +14,7 @@ class CreateSheetsTable extends Migration
     public function up()
     {
         Schema::create('sheets', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('id')->primary();
             $table->integer('column')->comment('列');
             $table->string('row',255)->comment('行');
         });
