@@ -15,6 +15,7 @@ use App\Models\Movie;
 use App\Models\Schedule;
 use App\Models\Sheet;
 use App\Models\Reservation;
+use App\Models\Screen;
 
 use Carbon\CarbonImmutable;
 
@@ -27,11 +28,17 @@ use function Psy\debug;
 
 class ReservationController extends Controller
 {
+
+    //予約座席一覧画面
     public function sheets($movieID,$scheduleID){
         $date = request()->query('date');
         if(request()->has('date')){
             $sheets = DB::table('sheets')
-            ->select('sheets.*','reservations.sheet_id')
+            ->select('sheets.*', 'reservations.sheet_id as reservation_sheet_id')
+            ->join('screens','sheets.screen_id','=','screens.id')
+            ->join('schedules', function ($join) use($scheduleID) {
+                $join->on('screens.id', '=', 'schedules.screen_id')->where('schedules.id', '=', $scheduleID);
+            })
             ->leftJoin('reservations', function ($join) use($scheduleID) {
                 $join->on('sheets.id', '=', 'reservations.sheet_id')->where('reservations.schedule_id', '=', $scheduleID);
             })
@@ -45,7 +52,18 @@ class ReservationController extends Controller
             abort(400);
         }
     }
-    
+
+    //予約一覧画面
+    public function index(){
+        
+        $reservations = Reservation::whereHas('schedule', function($query) {
+            $query->where('start_time','>',now());
+        })->with('sheet.screen')->with('schedule.movie')->get();
+
+        return view('getReservation',['reservations'=>$reservations]);
+    }
+
+    //予約新規作成画面
     public function reservationsCreate($movieID,$scheduleID){
         $date = request()->query('date');
         $sheetID = request()->query('sheetId');
@@ -70,6 +88,8 @@ class ReservationController extends Controller
             abort(400);
         }
     }
+
+    //予約新規作成画面（admin）
     public function reservationsAdminCreate(){
 
             $movie = Movie::get();
@@ -77,6 +97,7 @@ class ReservationController extends Controller
 
     }
 
+    //Ajaxデータ取得用処理　上映スケジュール取得処理
     public function getScheduleList(){
         $movieID = request()->query('movie_id');
         $schedule = Schedule::where('movie_id',$movieID)->where('start_time','>',now())->get();
@@ -84,18 +105,60 @@ class ReservationController extends Controller
 
     }
 
+    //Ajaxデータ取得用処理　座席取得処理
     public function getSheetList(){
         $scheduleID = request()->query('schedule_id');
         $sheets = DB::table('sheets')
-        ->select('sheets.*','reservations.sheet_id')
+        ->select('sheets.*','reservations.id as reservations_id')
+        ->join('schedules', function ($join) use($scheduleID) {
+            $join->on('sheets.screen_id', '=', 'schedules.screen_id')->where('schedules.id', '=', $scheduleID);
+        })
         ->leftJoin('reservations', function ($join) use($scheduleID) {
-            $join->on('sheets.id', '=', 'reservations.sheet_id')->where('reservations.schedule_id', '=', $scheduleID);
+            $join->on('sheets.screen_id', '=', 'reservations.id')->where('reservations.schedule_id', '=', $scheduleID);
         })
         ->get();
-        return ['sheets'=>$sheets];
 
+        return ['sheets'=>$sheets];
     }
 
+
+    //予約情報更新画面
+    public function edit($id){
+        
+        $reservationsQuery = DB::table('reservations')
+        ->select('reservations.*','movies.id AS movie_id','movies.title','sheets.id AS sheet_id','sheets.column','sheets.row','schedules.id AS schedule_id','schedules.start_time','schedules.end_time','schedules.screen_id')
+        ->join('schedules','reservations.schedule_id','=','schedules.id')
+        ->join('sheets','reservations.sheet_id','=','sheets.id')
+        ->join('movies','schedules.movie_id','=','movies.id')
+        ->where('reservations.id',$id)
+        ->first();
+
+        $screenID = $reservationsQuery->screen_id;
+        $movieID = $reservationsQuery->movie_id;
+        $scheduleID = $reservationsQuery->schedule_id;
+        
+        $movies = Movie::get();
+        $schedules = Schedule::where('movie_id',$movieID)->where('start_time','>',now())->get();
+        $sheets = DB::table('sheets')
+        ->select('sheets.*','reservations.id as reservations_id')
+        ->join('schedules', function ($join) use($scheduleID) {
+            $join->on('sheets.screen_id', '=', 'schedules.screen_id')->where('schedules.id', '=', $scheduleID);
+        })
+        ->leftJoin('reservations', function ($join) use($scheduleID) {
+            $join->on('sheets.screen_id', '=', 'reservations.id')->where('reservations.schedule_id', '=', $scheduleID);
+        })
+        ->get();
+
+        return view('editAdminReservation',['reservation'=>$reservationsQuery,'movies'=>$movies,'schedules'=>$schedules,'sheets'=>$sheets]);
+    }
+    
+
+
+
+
+
+
+    //予約情報新規作成処理
     public function reservationsStore(CreateReservationRequest $request){
 
         $reservationData = new Reservation;
@@ -118,13 +181,13 @@ class ReservationController extends Controller
                 abort(500);
             }
     
-            return redirect(route('admin.movies'));
+            return redirect(route('user.movies'));
         }else{
             return back()->withInput();
         }
-
     }
 
+    //予約情報新規作成処理（admin）
     public function adminReservationsStore(CreateAdminReservationRequest $request){
 
         $reservationData = new Reservation;
@@ -155,50 +218,8 @@ class ReservationController extends Controller
 
     }
 
-    public function index(){
-        
-        $reservations = Reservation::whereHas('schedule', function($query) {
-            $query->where('start_time','>',now());
-        })->get();
-        // $reservationsQuery = DB::table('reservations')
-        // ->select('reservations.*','movies.title','sheets.column','sheets.row','schedules.start_time','schedules.end_time')
-        // ->join('schedules','reservations.schedule_id','=','schedules.id')
-        // ->join('sheets','reservations.sheet_id','=','sheets.id')
-        // ->join('movies','schedules.movie_id','=','movies.id')
-        // ->get();
 
-        return view('getReservation',['reservations'=>$reservations]);
-    }
-    public function edit($id){
-        
-        $reservationsQuery = DB::table('reservations')
-        ->select('reservations.*','movies.id AS movie_id','movies.title','sheets.id AS sheet_id','sheets.column','sheets.row','schedules.id AS schedule_id','schedules.start_time','schedules.end_time')
-        ->join('schedules','reservations.schedule_id','=','schedules.id')
-        ->join('sheets','reservations.sheet_id','=','sheets.id')
-        ->join('movies','schedules.movie_id','=','movies.id')
-        ->where('reservations.id',$id)
-        ->first();
-
-        
-        $movies = Movie::get();
-        $schedules = Schedule::where('movie_id',$reservationsQuery->movie_id)->where('start_time','>',now())->get();
-        $sheets = Sheet::get();
-
-        return view('editAdminReservation',['reservation'=>$reservationsQuery,'movies'=>$movies,'schedules'=>$schedules,'sheets'=>$sheets]);
-    }
-    // public function indexSingle($id){
-    //     $movies = Movie::where('id',$id)->get();
-    //     $schedules = Schedule::where('movie_id',$id)->orderBy('start_time')->get();
-    //     return view('getSchedule',['movies'=>$movies,'schedules'=>$schedules]);
-    // }
-    // public function create($id){
-    //     return view('createSchedule',['movie_id'=>$id]);
-    // }
-    // public function edit($id){
-    //     $schedules = Schedule::where('id',$id)->orderBy('start_time')->get();
-    //     return view('editSchedule',['schedules'=>$schedules]);
-    // }
-
+    //予約情報更新処理
     public function update($reservations_id,UpdateAdminReservationRequest $request){
         $id = $reservations_id;
         $reservationData = Reservation::find($id);
@@ -224,6 +245,7 @@ class ReservationController extends Controller
 
     }
 
+    //予約情報削除処理
     public function destroy($id){
         $reservationData = Reservation::find($id);
         $reservationDataExists = Reservation::where('id',$id)->exists();

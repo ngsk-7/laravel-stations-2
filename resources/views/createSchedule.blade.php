@@ -23,6 +23,7 @@
         <form method="POST" action="./store" name="create-form" >
         <table class="table">
             <tr>
+            <th>スクリーン</th>
             <th>開始日付</th>
             <th>開始時刻</th>
             <th>終了日付</th>
@@ -31,6 +32,14 @@
                 @method('PATCH')
                 @csrf
                 <tr>
+                <td>
+                    <select id="screen_id" name="screen_id" >
+                        <option value="0">スクリーンを選択してください</option>
+                        @foreach ($screens as $screen)
+                        <option value="{{ $screen->id }}" >{{ $screen->name }}</option>
+                        @endforeach
+                    </select>
+                </td>
                 <td><input type="text" name="start_time_date" value="{{ old('start_time_date') }}"></td>
                 <td><input type="text" name="start_time_time" value="{{ old('start_time_time') }}"></td>
                 <td><input type="text" name="end_time_date" value="{{ old('end_time_date') }}"></td>

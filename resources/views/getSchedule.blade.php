@@ -57,7 +57,7 @@
 
             @if($rowCheck != $row)
             </table>
-            <h2>{{ $schedule->movies->title }}（{{ $schedule->movie_id }}）</h2>
+            <h2>{{ $schedule->movie->title }}（{{ $schedule->movie_id }}）</h2>
             <button data-href="/admin/movies/{{ $schedule->movie_id }}/edit" name="update-movie-button">動画情報編集</button>
             <button data-href="/admin/movies/{{ $schedule->movie_id }}/schedules/create" name="create-schedule-button">スケジュール新規作成</button>
             <table class="table">
@@ -65,6 +65,7 @@
                 <th>ID</th>
                 <th>動画ID</th>
                 <th>動画タイトル</th>
+                <th>スクリーンID</th>
                 <th>上映開始時刻</th>
                 <th>上映終了時刻</th>
                 <th>登録日時</th>
@@ -76,7 +77,8 @@
                 <tr>
                 <td>{{ $schedule->id }}</td>
                 <td>{{ $schedule->movie_id }}</td>
-                <td>{{ $schedule->movies->title }}</td>
+                <td>{{ $schedule->movie->title }}</td>
+                <td>{{ $schedule->screen_id }}</td>
                 <td>{{ $schedule->start_time }}</td>
                 <td>{{ $schedule->end_time }}</td>
                 <td>{{ $schedule->created_at }}</td>
@@ -95,5 +97,11 @@
     </ul>
 
     <div class="delete_check_dialog" style="display:none;">削除します。よろしいですか？</div>
+    
+    <div class="fixed-bottom">
+        <a href="/admin/movies">/admin/movies</a>
+        <a href="/admin/schedules">/admin/schedules</a>
+        <a href="/admin/reservations">/admin/reservations</a>
+    </div>
 </body>
 </html>

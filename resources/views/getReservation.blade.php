@@ -74,6 +74,7 @@
             <th>ID</th>
             <th>映画タイトル</th>
             <th>日時</th>
+            <th>スクリーン</th>
             <th>座席</th>
             <th>メールアドレス</th>
             <th>名前</th>
@@ -89,8 +90,9 @@
             @endphp
             <tr>
             <td>{{ $reservation->id }}</td>
-            <td>{{ $reservation->title }}</td>
+            <td>{{ $reservation->schedule->movie->title }}</td>
             <td>{{ $reservation->schedule->start_time }}～{{ $reservation->schedule->end_time }}</td>
+            <td>{{ $reservation->sheet->screen->name }}</td>
             <td>{{ $reservation->sheet->row }}{{ $reservation->sheet->column }}</td>
             <td>{{ $reservation->email }}</td>
             <td>{{ $reservation->name }}</td>
@@ -109,5 +111,11 @@
     </form>
 
     <div class="delete_check_dialog" style="display:none;">削除します。よろしいですか？</div>
+
+    <div class="fixed-bottom">
+        <a href="/admin/movies">/admin/movies</a>
+        <a href="/admin/schedules">/admin/schedules</a>
+        <a href="/admin/reservations">/admin/reservations</a>
+    </div>
 </body>
 </html>

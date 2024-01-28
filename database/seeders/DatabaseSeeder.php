@@ -24,21 +24,30 @@ class DatabaseSeeder extends Seeder
         // ]);
 
 
-
         $sheetsArray = ['A','B','C'];
         $idCount = 1;
-        for($i=0;$i<count($sheetsArray);$i++){
-            for($k=1;$k<=5;$k++){
-                $idExistCheck = DB::table('sheets')->where('id',$idCount)->exists();
-                if(!$idExistCheck){
-                    DB::table('sheets')->insert([
-                        'id' => $idCount,
-                        'column' => $k,
-                        'row' => $sheetsArray[$i],
-                    ]);
+        
+        for($m=1;$m<=3;$m++){
+            DB::table('screens')->insert([
+                'id' => $m,
+                'name' => 'スクリーン'.$m,
+            ]);
+            
+            for($i=0;$i<count($sheetsArray);$i++){
+                for($k=1;$k<=5;$k++){
+                    $idExistCheck = DB::table('sheets')->where('id',$idCount)->exists();
+                    if(!$idExistCheck){
+                        DB::table('sheets')->insert([
+                            'id' => $idCount,
+                            'column' => $k,
+                            'row' => $sheetsArray[$i],
+                            'screen_id' => $m,
+                        ]);
+                    }
+                    $idCount++;
                 }
-                $idCount++;
             }
         }
+
     }
 }

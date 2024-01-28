@@ -16,7 +16,38 @@ use function Psy\debug;
 
 class MovieController extends Controller
 {
+
+    //動画一覧画面
     public function index(Request $request){
+        $keyword = $request->query('keyword');
+        $isShowing = $request->query('is_showing');
+
+        $moviesQuery = DB::table('movies')
+        ->select('movies.*','genres.name')
+        ->leftJoin('genres','movies.genre_id','=','genres.id');
+
+        if(!empty($keyword)){
+            $moviesQuery->where('title','like',"%$keyword%")
+            ->orWhere('description','like',"%$keyword%");
+            
+        }
+
+        //SQLインジェクション検証用
+        // 参考　https://trans-it.net/laravel-sqli/
+        // Log::debug($request->query('keyword'));
+        // $moviesQuery->whereRaw("title = '{$request->query('keyword')}");
+        
+        if(isset($isShowing) && ($isShowing == 0 || $isShowing == 1)){
+            $moviesQuery->where('is_showing',$isShowing);
+        }
+        
+
+        $movies = $moviesQuery->orderBy('movies.id')->paginate(20);
+        return view('getMovie',['movies'=>$movies]);
+    }
+
+    //動画一覧画面（admin）
+    public function adminIndex(Request $request){
         $keyword = $request->query('keyword');
         $isShowing = $request->query('is_showing');
 
@@ -31,25 +62,27 @@ class MovieController extends Controller
         if(isset($isShowing) && ($isShowing == 0 || $isShowing == 1)){
             $moviesQuery->where('is_showing',$isShowing);
         }
-        // $moviesQuery->paginate(20);
         $movies = $moviesQuery->orderBy('movies.id')->paginate(20);
-        return view('getMovie',['movies'=>$movies]);
+        return view('getAdminMovie',['movies'=>$movies]);
     }
+
+    //動画新規作成画面
     public function create(){
         // $movies = Movie::all();
         return view('createMovie');
     }
+
+    //動画更新画面
     public function edit($id){
-        
-        // $moviesQuery = DB::table('movies')
-        // ->select('movies.*','genres.name')
-        // ->leftJoin('genres','movies.genre_id','=','genres.id')
-        // ->where('movies.id',$id)
-        // ->get();
-        // $movies = $moviesQuery;
         $movies = Movie::where('id',$id)->get();
         return view('editMovie',['movies'=>$movies]);
     }
+
+
+
+
+
+    //動画新規作成処理
     public function store(UpdateMovieRequest $request){
 
         $movieData = new Movie;
@@ -87,6 +120,9 @@ class MovieController extends Controller
         return redirect(route('admin.movies'));
 
     }
+
+
+    //動画更新処理
     public function update(UpdateMovieRequest $request){
         $id = $request->id;
         $genreName = $request->genre;
@@ -123,6 +159,9 @@ class MovieController extends Controller
         return redirect(route('admin.movies'));
 
     }
+
+
+    //動画削除処理
     public function destroy($id){
         $movieData = Movie::find($id);
         $movieDataExists = Movie::where('id',$id)->exists();

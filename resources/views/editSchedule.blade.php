@@ -27,6 +27,7 @@
             <tr>
             <th>スケジュールID</th>
             <th>動画ID</th>
+            <th>スクリーン</th>
             <th>開始日付</th>
             <th>開始時刻</th>
             <th>終了日付</th>
@@ -36,6 +37,22 @@
             <tr>
                 <td><input type="hidden" name="id" value="{{ $schedule->id }}">{{ $schedule->id }}</td>
                 <td><input type="hidden" name="movie_id" value="{{ $schedule->movie_id }}">{{ $schedule->movie_id }}</td>
+                
+                <td>
+                    <select id="screen_id" name="screen_id" >
+                        <option value="0">スクリーンを選択してください</option>
+                        @foreach ($screens as $screen)
+                        @php
+                            $selected = "";
+                            if($schedule->screen_id == $screen->id ){
+                                $selected = "selected";
+                            }
+                        @endphp
+                        <option value="{{ $screen->id }}" {{ $selected }} >{{ $screen->name }}</option>
+                        @endforeach
+                    </select>
+                </td>
+
                 <td><input type="text" name="start_time_date" value="{{ $schedule->start_time->format('Y-m-d') }}"></td>
                 <td><input type="text" name="start_time_time" value="{{ $schedule->start_time->format('H:i') }}"></td>
                 <td><input type="text" name="end_time_date" value="{{ $schedule->end_time->format('Y-m-d') }}"></td>

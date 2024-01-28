@@ -90,6 +90,7 @@ class UpdateScheduleRequest extends FormRequest
         };
         return [
             'movie_id' => ['required'],
+            'screen_id' => ['required','gte:1'],
             'start_time_date' => ['required', 'date_format:Y-m-d', 'before_or_equal:end_time_date'],
             'start_time_time' => ['required', 'date_format:H:i',$validate_func],
             'end_time_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:start_time_date'],
@@ -101,7 +102,7 @@ class UpdateScheduleRequest extends FormRequest
     public function messages()
     {
         return [
-            // 'end_time.after' => '終了時刻は開始時刻以降の日時を入力してください。', 
+            'screen_id.gte' => 'スクリーンを選択してください。', 
             // 'diff_input_time.gt' => '開始時刻と終了時刻の差は5分より多く必要です。', 
         ];
     }

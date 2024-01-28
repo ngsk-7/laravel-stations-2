@@ -21,7 +21,6 @@
     </script>
 </head>
 <body>
-    <a href="./">一覧へ戻る</a>
     <ul>
         <form method="POST" action="./update" name="update-form" >
         <table class="table">
@@ -72,6 +71,7 @@
             <tr>
             <th>ID</th>
             <th>動画ID</th>
+            <th>スクリーンID</th>
             <th>上映開始時刻</th>
             <th>上映終了時刻</th>
             <th>予約</th>
@@ -85,6 +85,7 @@
                 <tr>
                 <td>{{ $schedule->id }}</td>
                 <td>{{ $schedule->movie_id }}</td>
+                <td>{{ $schedule->screen_id }}</td>
                 <td>{{ $schedule->start_time }}</td>
                 <td>{{ $schedule->end_time }}</td>
                 <td><button data-href="/movies/{{ $schedule->movie_id }}/schedules/{{ $schedule->id }}/sheets" name="reservation-button">座席を予約する</button></td>

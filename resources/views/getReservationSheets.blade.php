@@ -20,6 +20,45 @@
                 var postURL = 'reservations/create?date=' + date + '&sheetId=' + sheetId;
                 location.href=postURL;
             });
+            
+
+            
+            //座席取得処理
+            // $(document).on('click','[name=reservation-create-button]',function(event){
+            //     event.preventDefault();
+            //     var date = $('[name=date]').val();
+            //     var sheetRow = $(this).parent().find('[name=sheet-row]').val();
+            //     var sheetColumn = $(this).parent().find('[name=sheet-column]').val();
+            //     var scheduleId = $('[name=schedule_id]').val();
+            //     var postAjaxURL = 'reservations/getSheetId?sheetRow=' + sheetRow + '&sheetColumn=' + sheetColumn + '&scheduleId=' + scheduleId;
+
+            //     $.ajax({
+            //         type: "get", //HTTP通信の種類
+            //         url: postAjaxURL,
+            //         dataType: "json"
+            //     })
+            //     //通信が成功したとき
+            //     .done((res) => { 
+            //     $.each(res, function (index, value) {
+            //         console.log(res);
+                    
+            //         var sheetArray = res.sheets;
+            //         var sheetId = 0;
+            //         //どこかのスクリーンで空席が存在したら、予約作成画面に遷移
+            //         if(sheetArray.length > 0){
+            //             sheetId = sheetArray[0].id;
+            //             var postURL = 'reservations/create?date=' + date + '&sheetId=' + sheetId;
+            //             location.href=postURL;
+            //         }
+
+            //     });
+            //     })
+            //     //通信が失敗したとき
+            //     .fail((error) => {
+            //     console.log(error.statusText);
+            //     });
+
+            // });
 
         }());
     </script>
@@ -47,7 +86,7 @@
             @php
                 $row = $sheet->row;
                 $reservationCheckflag = true;
-                if(($sheet->sheet_id > 0)){
+                if(($sheet->reservation_sheet_id > 0)){
                     $reservationCheckflag = false;
                 }
             @endphp
@@ -69,6 +108,7 @@
             </tr>
         </table>
         <input type="hidden" name="date" value="{{ request()->query('date') }}">
+        <input type="hidden" name="schedule_id" value="{{ $schedule->id }}">
     </ul>
 
 </body>

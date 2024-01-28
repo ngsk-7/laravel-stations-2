@@ -17,6 +17,7 @@ class CreateSheetsTable extends Migration
             $table->unsignedBigInteger('id')->primary();
             $table->integer('column')->comment('列');
             $table->string('row',255)->comment('行');
+            $table->foreignId('screen_id')->comment('スクリーンID')->references('id')->on('screens');
         });
     }
 

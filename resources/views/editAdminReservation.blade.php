@@ -74,6 +74,7 @@
                         var column = sheetInfo.column;
                         var row = sheetInfo.row;
                         var sheetHtml = row + "-" + column;
+
                         if(sheetReservationID > 0){
                             //予約あり
                         }else{

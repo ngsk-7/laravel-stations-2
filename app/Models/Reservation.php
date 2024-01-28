@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Schedule;
 use App\Models\Sheet;
+use App\Models\Screen;
+use App\Models\Movie;
 
 class Reservation extends Model
 {
@@ -20,5 +22,11 @@ class Reservation extends Model
 
     public function sheet() {
         return $this->belongsTo(Sheet::class,'sheet_id','id');
+    }
+    public function screen() {
+        return $this->belongsToMany(Screen::class);
+    }
+    public function movie() {
+        return $this->belongsToMany(Movie::class);
     }
 }
