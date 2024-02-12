@@ -16,6 +16,7 @@ class CreateReservationsTable extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->date('date')->comment('上映日');
+            $table->foreignId('user_id')->comment('ユーザーID')->references('id')->on('users');
             $table->foreignId('schedule_id')->comment('スケジュールID')->references('id')->on('schedules');
             $table->unsignedBigInteger('sheet_id')->comment('シートID');
             $table->foreign('sheet_id')->references('id')->on('sheets');

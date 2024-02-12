@@ -16,6 +16,7 @@ use App\Models\Schedule;
 use App\Models\Sheet;
 use App\Models\Reservation;
 use App\Models\Screen;
+use Illuminate\Support\Facades\Auth;
 
 use Carbon\CarbonImmutable;
 
@@ -67,6 +68,7 @@ class ReservationController extends Controller
     public function reservationsCreate($movieID,$scheduleID){
         $date = request()->query('date');
         $sheetID = request()->query('sheetId');
+        $auths = Auth::user();
         if(request()->has('date') && request()->has('sheetId')){
 
             $sheet = DB::table('sheets')
@@ -83,7 +85,7 @@ class ReservationController extends Controller
 
             $movie = Movie::where('id',$movieID)->first();
             $schedule = Schedule::where('id',$scheduleID)->first();
-            return view('createReservation',['sheet'=>$sheet,'movie'=>$movie,'schedule'=>$schedule]);
+            return view('createReservation',['sheet'=>$sheet,'movie'=>$movie,'schedule'=>$schedule,'auths' => $auths]);
         }else{
             abort(400);
         }
@@ -107,14 +109,15 @@ class ReservationController extends Controller
 
     //Ajaxデータ取得用処理　座席取得処理
     public function getSheetList(){
+        $movieID = request()->query('movie_id');
         $scheduleID = request()->query('schedule_id');
         $sheets = DB::table('sheets')
         ->select('sheets.*','reservations.id as reservations_id')
-        ->join('schedules', function ($join) use($scheduleID) {
-            $join->on('sheets.screen_id', '=', 'schedules.screen_id')->where('schedules.id', '=', $scheduleID);
+        ->join('schedules', function ($join) use($scheduleID,$movieID) {
+            $join->on('sheets.screen_id', '=', 'schedules.screen_id')->where('schedules.id', '=', $scheduleID)->where('schedules.movie_id', '=', $movieID);
         })
         ->leftJoin('reservations', function ($join) use($scheduleID) {
-            $join->on('sheets.screen_id', '=', 'reservations.id')->where('reservations.schedule_id', '=', $scheduleID);
+            $join->on('sheets.id', '=', 'reservations.sheet_id')->on('schedules.id', '=', 'reservations.schedule_id')->where('reservations.schedule_id', '=', $scheduleID);
         })
         ->get();
 
@@ -169,6 +172,7 @@ class ReservationController extends Controller
             try {
                 $reservationData->fill([
                     $reservationData->date = $request->input('date'),
+                    $reservationData->user_id = $request->input('user_id'),
                     $reservationData->schedule_id = $request->input('schedule_id'),
                     $reservationData->sheet_id = $request->input('sheet_id'),
                     $reservationData->email = $request->input('email'),

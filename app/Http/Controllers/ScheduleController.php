@@ -87,7 +87,7 @@ class ScheduleController extends Controller
             abort(500);
         }
 
-        return redirect(route('admin.schedules'));
+        return redirect(route('admin.movies'));
 
     }
 
