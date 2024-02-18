@@ -125,8 +125,8 @@ class ScheduleController extends Controller
     //スケジュール削除処理
     public function destroy($id){
         $scheduleData = Schedule::find($id);
-        $scheduleDataExists = Schedule::where('id',$id)->exists();
-        if($scheduleDataExists){
+        $scheduleDataExists = Schedule::where('id',$id)->exists();//この処理は不要、scheduleDataをnullかどうかでチェックすればOK
+        if($scheduleData != null){
             $scheduleData->delete();
         }else{
             abort(404);

@@ -18,6 +18,8 @@ use App\Http\Controllers\ReservationController;
 |
 */
 
+//更新処理のget等は不要
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -81,7 +83,6 @@ Route::get('/admin/schedules/{id}',[ScheduleController::class,'indexSingle']);
 //スケジュール編集画面
 Route::get('/admin/schedules/{id}/edit',[ScheduleController::class,'edit']);
 //スケジュール更新処理
-Route::get('/admin/schedules/{id}/update',[ScheduleController::class,'update']);
 Route::post('/admin/schedules/{id}/update',[ScheduleController::class,'update']);
 Route::patch('/admin/schedules/{id}/update',[ScheduleController::class,'update']);
 

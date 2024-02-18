@@ -18,6 +18,8 @@ class CreatePracticesTable extends Migration
             $table->text('title')->comment('タイトル');
             $table->timestamps();
         });
+        //alter tableなどもここで指定可能
+        //migrateは積み重ねていくのが基本のため、DB構造に変更があった場合は、変更分のmigrateファイルを増やしていく
     }
 
     /**
